@@ -43,7 +43,7 @@ partial class Program
 
             WorkItem current;
             try { current = await client.GetWorkItemAsync(wiId); }
-            catch { Warn($"  ⚠️  Cannot fetch WI #{wiId}, skipping."); errors++; continue; }
+            catch (Exception ex) { Warn($"  ⚠️  Cannot fetch WI #{wiId}: {ex.Message} — skipping."); errors++; continue; }
 
             var patch = new JsonPatchDocument();
 

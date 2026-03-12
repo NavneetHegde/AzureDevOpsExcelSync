@@ -47,7 +47,7 @@ partial class Program
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                throw new InvalidOperationException($"Failed to create work item of type '{type}': {e.Message}", e);
             }
         }
     }

@@ -16,7 +16,8 @@ partial class Program
                 foreach (var type in asm.GetTypes()
                     .Where(t => typeof(IAesPlugin).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract))
                 {
-                    var plugin = (IAesPlugin)Activator.CreateInstance(type)!;
+                    var instance = Activator.CreateInstance(type);
+                    if (instance is not IAesPlugin plugin) continue;
                     _plugins[plugin.Command.ToLower()] = plugin;
                     Hint($"  🔌  Plugin loaded: /{plugin.Command}  — {plugin.Description}");
                 }

@@ -86,7 +86,7 @@ partial class Program
                     encryptedBytes, null, System.Security.Cryptography.DataProtectionScope.CurrentUser);
                 return System.Text.Encoding.UTF8.GetString(plainBytes);
             }
-            catch
+            catch (System.Security.Cryptography.CryptographicException)
             {
                 Warn("  ⚠️  Could not decrypt PAT — please run /config pat <your-pat> again.");
                 return null;

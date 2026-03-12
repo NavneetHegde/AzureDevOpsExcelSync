@@ -26,8 +26,10 @@ partial class Program
         int row = 2;
         bool alt = false;
 
-        foreach (var (story, tasks) in groups)
+        for (int g = 0; g < groups.Count; g++)
         {
+            var (story, tasks) = groups[g];
+
             // Parent item row — blue background
             var storyType = story.Fields.TryGetValue("System.WorkItemType", out var st) ? st?.ToString() ?? "Work Item" : "Work Item";
             WriteRow(ws, row++, story, storyType, org, project, XLColor.FromHtml("#D6E4F0"));
@@ -41,7 +43,7 @@ partial class Program
             }
 
             // Thin separator row between parent items
-            if (groups.IndexOf((story, tasks)) < groups.Count - 1)
+            if (g < groups.Count - 1)
             {
                 ws.Row(row).Height = 6;
                 ws.Row(row).Style.Fill.BackgroundColor = XLColor.FromHtml("#E0E0E0");
@@ -88,65 +90,6 @@ partial class Program
         }
         info.Column(1).Width = 80;
 
-        wb.SaveAs(path);
-    }
-
-    static void BuildExcel(WorkItem story, List<WorkItem> tasks, string path, string org, string project)
-    {
-        using var wb = new XLWorkbook();
-        var ws = wb.AddWorksheet("Work Items");
-
-        ws.Cell(1, 1).Value = "ID";
-        ws.Cell(1, 2).Value = "Type";
-        ws.Cell(1, 3).Value = "ADO Link";
-        for (int i = 0; i < FriendlyHeaders.Length; i++)
-            ws.Cell(1, i + 4).Value = FriendlyHeaders[i];
-
-        var hdr = ws.Row(1);
-        hdr.Style.Font.Bold = true;
-        hdr.Style.Font.FontColor = XLColor.White;
-        hdr.Style.Fill.BackgroundColor = XLColor.FromHtml("#1E3A5F");
-        hdr.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-        hdr.Height = 20;
-
-        int row = 2;
-        var storyType = story.Fields.TryGetValue("System.WorkItemType", out var st) ? st?.ToString() ?? "Work Item" : "Work Item";
-        WriteRow(ws, row++, story, storyType, org, project, XLColor.FromHtml("#D6E4F0"));
-        bool alt = false;
-        foreach (var t in tasks)
-        {
-            var taskType = t.Fields.TryGetValue("System.WorkItemType", out var tt) ? tt?.ToString() ?? "Work Item" : "Work Item";
-            WriteRow(ws, row++, t, taskType, org, project, alt ? XLColor.FromHtml("#EEF4FB") : XLColor.FromHtml("#FAFAFA"));
-            alt = !alt;
-        }
-
-        ws.Columns().AdjustToContents(8, 80);
-        ws.Column(1).Width = 8;
-        ws.Column(2).Width = 12;
-        ws.Column(3).Width = 40;
-        ws.SheetView.FreezeRows(1);
-
-        var info = wb.AddWorksheet("Instructions");
-        string[] lines = [
-            "HOW TO USE THIS FILE",
-            "",
-            "1. In AES, run:  /pull <id>",
-            "2. Edit the YELLOW cells. Do NOT change ID, Type or ADO Link.",
-            "3. In AES, run:  /push <filename.xlsx>",
-            "",
-            "Yellow = editable    Grey = read-only",
-            "",
-            "TIPS",
-            "  • Blank cell clears that field in Azure DevOps",
-            "  • Save the file before /push",
-            "  • Add --force to skip confirmation prompt",
-        ];
-        for (int i = 0; i < lines.Length; i++)
-        {
-            info.Cell(i + 1, 1).Value = lines[i];
-            if (i == 0) info.Cell(i + 1, 1).Style.Font.Bold = true;
-        }
-        info.Column(1).Width = 80;
         wb.SaveAs(path);
     }
 

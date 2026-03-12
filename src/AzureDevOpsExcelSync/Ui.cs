@@ -126,7 +126,7 @@ partial class Program
     // OSC 8 hyperlink — works in Windows Terminal, iTerm2, modern terminals
     // Falls back gracefully in plain cmd.exe (just prints the text)
     static void WriteLink(string text, string url) =>
-        Console.Write($"]8;;{url}\\{text}]8;;\\");
+        Console.Write($"\x1b]8;;{url}\x1b\\{text}\x1b]8;;\x1b\\");
 
     static string Truncate(string s) => s.Length > 60 ? s[..57] + "..." : s;
     static string Truncate(string s, int max) => s.Length > max ? s[..(max - 1)] + "…" : s;
