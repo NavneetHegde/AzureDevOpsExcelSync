@@ -36,7 +36,7 @@ partial class Program
     // ════════════════════════════════════════════════════════════
     // Config persistence  ~/.aes/config
     // ════════════════════════════════════════════════════════════
-    static readonly string PatFile = Path.Combine(AesRoot, "config", ".pat");
+    static string PatFile => Path.Combine(AesRoot, "config", ".pat");
 
     static void SaveConfig()
     {
