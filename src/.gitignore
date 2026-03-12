@@ -1,0 +1,47 @@
+# Build results
+
+bin/
+obj/
+out/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+*.log
+
+# User-specific
+
+*.user
+*.suo
+.vs/
+.vscode/
+
+# ASP.NET & .NET
+
+*.dbmdl
+*.jfm
+*.pdb
+*.local.json
+appsettings.Development.json
+
+# NuGet
+
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# Others
+
+TestResults/
+launchSettings.json
+*.sqlite
+*.db
+*.mdf
+*.ldf
+
+# Aspire
+
+!.env*
+.env.example
+/docs/spicy-orbiting-lerdorf.md

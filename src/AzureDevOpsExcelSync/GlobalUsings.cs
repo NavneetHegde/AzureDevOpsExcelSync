@@ -1,0 +1,9 @@
+global using ClosedXML.Excel;
+global using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
+global using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
+global using Microsoft.VisualStudio.Services.Common;
+global using Microsoft.VisualStudio.Services.WebApi;
+global using Microsoft.VisualStudio.Services.WebApi.Patch;
+global using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
+global using System.Reflection;
+global using System.Runtime.Loader;
