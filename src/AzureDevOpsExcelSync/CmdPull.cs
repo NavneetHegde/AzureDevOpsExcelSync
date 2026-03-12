@@ -29,7 +29,12 @@ partial class Program
 
         BuildExcelMulti(stories, outFile, _org!, _project!, wiType, title);
 
-        Ok($"\n  ✅  Saved → {Path.GetFullPath(outFile)}");
+        string fullPath = Path.GetFullPath(outFile);
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write("\n  ✅  Saved → ");
+        WriteLink(fullPath, new Uri(fullPath).AbsoluteUri);
+        Console.WriteLine();
+        Console.ResetColor();
         Hint($"  Edit the yellow cells, then run:  /push {outFile}");
     }
 

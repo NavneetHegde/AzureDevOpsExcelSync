@@ -9,13 +9,30 @@
     <!-- dotnet global tool -->
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>AES</ToolCommandName>
+
+    <!-- NuGet package metadata -->
     <PackageId>AzureDevOpsExcelSync</PackageId>
-    <Description>Interactive CLI for syncing Azure DevOps WorkItems with Excel. Type AES to start.</Description>
+    <Title>AES — Azure DevOps Excel Sync</Title>
+    <Description>Interactive CLI that syncs Azure DevOps work items with Excel. Pull a work item hierarchy into a spreadsheet, edit it locally, then push changes back — with a dry-run preview before anything is written. Works with Agile, Scrum, CMMI, and custom process templates. Install with: dotnet tool install -g AzureDevOpsExcelSync</Description>
     <Authors>Navneet Hegde</Authors>
+    <Copyright>Copyright © 2025 Navneet Hegde</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/NavneetHegde/AzureDevOpsExcelSync</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/NavneetHegde/AzureDevOpsExcelSync</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>azure-devops;excel;work-items;cli;dotnet-tool;sync;ado</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <IsPackable>true</IsPackable>
     <AssemblyVersion>$(Version)</AssemblyVersion>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\icon.png" Pack="true" PackagePath="\" Condition="Exists('..\..\icon.png')" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="19.225.2" />

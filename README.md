@@ -9,20 +9,26 @@ Works with any Azure DevOps process template: **Agile, Scrum, CMMI, or custom**.
 Requires [.NET 10 SDK](https://dotnet.microsoft.com/download).
 
 ```bash
-# Clone and pack
-git clone <repo-url>
-cd AzureDevOpsExcelSync
-dotnet pack src/AzureDevOpsExcelSync/AzureDevOpsExcelSync.csproj
-
-# Install as a global tool
-dotnet tool install --global --add-source ./src/AzureDevOpsExcelSync/nupkg AzureDevOpsExcelSync
+dotnet tool install -g AzureDevOpsExcelSync
 ```
 
 To update an existing installation:
 
 ```bash
-dotnet tool update --global --add-source ./src/AzureDevOpsExcelSync/nupkg AzureDevOpsExcelSync
+dotnet tool update -g AzureDevOpsExcelSync
 ```
+
+<details>
+<summary>Install from source</summary>
+
+```bash
+git clone https://github.com/NavneetHegde/AzureDevOpsExcelSync
+cd AzureDevOpsExcelSync
+dotnet pack src/AzureDevOpsExcelSync/AzureDevOpsExcelSync.csproj
+dotnet tool install --global --add-source ./src/AzureDevOpsExcelSync/nupkg AzureDevOpsExcelSync
+```
+
+</details>
 
 ## Quick Start
 
@@ -41,6 +47,8 @@ On first run, configure your Azure DevOps connection:
 Settings are stored in `~/.aes/config/settings`. The PAT is stored separately — see [PAT Storage & Security](#pat-storage--security) below.
 
 ## Commands
+
+Type `/` at the prompt to open an interactive command picker. Arrow keys navigate the list, **Enter** selects and runs the command, **Tab** auto-completes it into the prompt for editing, **Esc** dismisses the picker.
 
 | Command | Description |
 |---------|-------------|
@@ -155,7 +163,7 @@ AES
   🔌  Plugin loaded: /report  — Generate custom HTML report
 ```
 
-Loaded plugins appear under a **Plugins** section in `/help`. Each plugin receives an `AesContext` with the configured `Org`, `Project`, `Pat`, and a `Connect()` helper that returns a ready-to-use `WorkItemTrackingHttpClient`.
+Loaded plugins appear under a **Plugins** section in `/help` and in the interactive picker when you type `/`. Each plugin receives an `AesContext` with the configured `Org`, `Project`, `Pat`, and a `Connect()` helper that returns a ready-to-use `WorkItemTrackingHttpClient`.
 
 ## License
 
