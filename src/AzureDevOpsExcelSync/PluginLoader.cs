@@ -1,6 +1,6 @@
 partial class Program
 {
-    static readonly string PluginDir = Path.Combine(AesRoot, "plugins");
+    static string PluginDir => Path.Combine(AesRoot, "plugins");
     static readonly Dictionary<string, IAesPlugin> _plugins = new(StringComparer.OrdinalIgnoreCase);
 
     static void LoadPlugins()
