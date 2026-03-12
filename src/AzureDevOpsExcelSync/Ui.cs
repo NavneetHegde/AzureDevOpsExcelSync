@@ -6,7 +6,7 @@ partial class Program
 
     record PickerEntry(string Command, string Usage, string Description);
 
-    const int MaxPickerRows = 8;
+    const int MaxPickerRows = 3;
 
     static readonly PickerEntry[] BuiltinCommands =
     [
@@ -108,13 +108,20 @@ partial class Program
 
     static string? ReadLineWithPicker()
     {
-        // Fall back gracefully when stdin is not an interactive terminal
+        // Fall back gracefully when stdin is not an interactive terminal,
+        // or when there isn't enough room below the cursor for the picker rows
+        // (avoids ArgumentOutOfRangeException when the cursor is near the buffer bottom).
         if (Console.IsInputRedirected)
             return Console.ReadLine();
 
-        var buf = new StringBuilder();
         int promptRow = Console.CursorTop;
         int promptCol = Console.CursorLeft;
+
+        bool pickerEnabled = (Console.WindowTop + Console.WindowHeight - promptRow) > MaxPickerRows + 1;
+        if (!pickerEnabled)
+            return Console.ReadLine();
+
+        var buf = new StringBuilder();
         int selIndex = 0;
         int pickerCount = 0;
 
@@ -286,13 +293,7 @@ partial class Program
 
     static void PrintPrompt()
     {
-        string rule = "  " + new string('─', Math.Min(Console.WindowWidth - 3, 62));
-
-        Console.ForegroundColor = ConsoleColor.DarkGray;
-        Console.WriteLine(rule);
-
-        int promptRow = Console.CursorTop;
-
+        Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.DarkCyan;
         Console.Write("  AES");
         if (_project != null)
@@ -303,15 +304,6 @@ partial class Program
         Console.ForegroundColor = ConsoleColor.DarkCyan;
         Console.Write(" › ");
         Console.ResetColor();
-
-        int promptLen = Console.CursorLeft;
-
-        // Print bottom rule then move cursor back to the prompt line for input
-        Console.WriteLine();
-        Console.ForegroundColor = ConsoleColor.DarkGray;
-        Console.Write(rule);
-        Console.ResetColor();
-        Console.SetCursorPosition(promptLen, promptRow);
     }
 
     static void PrintHelp()
