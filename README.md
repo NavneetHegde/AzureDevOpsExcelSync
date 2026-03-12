@@ -4,6 +4,8 @@ An interactive CLI tool that syncs Azure DevOps work items with Excel. Pull a wo
 
 Works with any Azure DevOps process template: **Agile, Scrum, CMMI, or custom**. No configuration needed — hierarchy structure is detected automatically at runtime.
 
+![AES demo](docs/aes-demo.gif)
+
 ## Installation
 
 Requires [.NET 10 SDK](https://dotnet.microsoft.com/download).
