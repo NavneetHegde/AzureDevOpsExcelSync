@@ -46,6 +46,7 @@ partial class Program
             catch (Exception ex) { Warn($"  ⚠️  Cannot fetch WI #{wiId}: {ex.Message} — skipping."); errors++; continue; }
 
             var patch = new JsonPatchDocument();
+            var rowChanges = new List<(string Field, string Before, string After)>();
 
             for (int i = 0; i < EditableFields.Length; i++)
             {
@@ -56,25 +57,14 @@ partial class Program
                 if (field == "System.AssignedTo" && current.Fields.TryGetValue(field, out var raw))
                     currentVal = (raw as IdentityRef)?.DisplayName ?? raw?.ToString() ?? "";
 
-                // Normalise tags for comparison — sort and trim so order doesn't matter
-                if (field == "System.Tags")
-                {
-                    var normNew = NormaliseTags(newVal);
-                    var normCurrent = NormaliseTags(currentVal);
-                    if (normNew == normCurrent) continue;
-                }
-                else if (newVal == currentVal) continue;
+                bool changed = field == "System.Tags"
+                    ? NormaliseTags(newVal) != NormaliseTags(currentVal)
+                    : newVal != currentVal;
 
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine($"  WI #{wiId}  [{FriendlyHeaders[i]}]");
-                Console.ResetColor();
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.WriteLine($"    before: {Truncate(currentVal)}");
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"    after:  {Truncate(newVal)}");
-                Console.ResetColor();
+                if (!changed) continue;
 
-                // Tags: send normalised value so ADO fully replaces (not appends)
+                rowChanges.Add((FriendlyHeaders[i], currentVal, newVal));
+
                 object? patchValue = field == "System.Tags"
                     ? (string.IsNullOrWhiteSpace(newVal) ? null : (object)NormaliseTags(newVal))
                     : string.IsNullOrWhiteSpace(newVal)
@@ -83,13 +73,15 @@ partial class Program
 
                 patch.Add(new JsonPatchOperation
                 {
-                    Operation = Operation.Replace,   // Replace (not Add) ensures full overwrite
+                    Operation = Operation.Replace,
                     Path = $"/fields/{field}",
                     Value = patchValue
                 });
             }
 
             if (patch.Count == 0) { Hint($"  WI #{wiId}  — no changes"); continue; }
+
+            PrintChangeTable(wiId, rowChanges);
 
             if (!dryRun)
             {
@@ -105,8 +97,55 @@ partial class Program
         }
 
         string label = dryRun ? "Preview" : "Done";
-        string verb = dryRun ? "would change" : "updated";
+        string verb  = dryRun ? "would change" : "updated";
         Console.WriteLine($"\n  {label} — {changes} item(s) {verb}, {errors} error(s).");
         return changes > 0;
     }
+
+    static void PrintChangeTable(int wiId, List<(string Field, string Before, string After)> rowChanges)
+    {
+        const int fieldW = 20;
+        int available = Math.Max(72, Math.Min(Console.WindowWidth - 4, 140));
+        int dataW = (available - fieldW - 7) / 2;   // 7 = borders + padding
+
+        string topBar = $"  ┌{Bar(fieldW)}┬{Bar(dataW)}┬{Bar(dataW)}┐";
+        string sepBar = $"  ├{Bar(fieldW)}┼{Bar(dataW)}┼{Bar(dataW)}┤";
+        string botBar = $"  └{Bar(fieldW)}┴{Bar(dataW)}┴{Bar(dataW)}┘";
+
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine($"\n  WI #{wiId}");
+
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.WriteLine(topBar);
+
+        // Header row
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine($"  │ {"Field".PadRight(fieldW)} │ {"Before".PadRight(dataW)} │ {"After".PadRight(dataW)} │");
+
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.WriteLine(sepBar);
+
+        foreach (var (field, before, after) in rowChanges)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write("  │ ");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write(Truncate(field, fieldW).PadRight(fieldW));
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write(" │ ");
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.Write(Truncate(before, dataW).PadRight(dataW));
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write(" │ ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(Truncate(after, dataW).PadRight(dataW));
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine(" │");
+        }
+
+        Console.WriteLine(botBar);
+        Console.ResetColor();
+    }
+
+    static string Bar(int width) => new string('─', width + 2);
 }

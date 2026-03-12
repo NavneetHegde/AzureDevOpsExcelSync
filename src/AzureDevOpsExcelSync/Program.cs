@@ -88,7 +88,7 @@ partial class Program
         while (true)
         {
             PrintPrompt();
-            var line = Console.ReadLine()?.Trim();
+            var line = ReadLineWithPicker()?.Trim();
             if (string.IsNullOrWhiteSpace(line)) continue;
 
             var (cmd, args) = ParseLine(line);
