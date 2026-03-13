@@ -35,8 +35,8 @@ jobs:
 
       - name: Generate SBOM (CycloneDX)
         run: |
-          dotnet tool install --global CycloneDX
-          dotnet CycloneDX src/AzureDevOpsExcelSync/AzureDevOpsExcelSync.csproj -o ./sbom -j
+          dotnet tool install --global CycloneDX --version 6.0.0
+          dotnet-CycloneDX src/AzureDevOpsExcelSync/AzureDevOpsExcelSync.csproj -o ./sbom --json
           mv ./sbom/bom.json ./sbom/sbom-${{ steps.version.outputs.VERSION }}.cdx.json
 
       - name: Nuget Login (OIDC + temp API Key)
