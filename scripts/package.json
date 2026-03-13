@@ -1,0 +1,13 @@
+{
+  "name": "aes-gif-generator",
+  "version": "1.0.0",
+  "description": "Generates docs/aes-demo.gif for the README",
+  "type": "module",
+  "scripts": {
+    "generate": "node generate-gif.mjs"
+  },
+  "dependencies": {
+    "canvas": "^3.1.0",
+    "gif-encoder-2": "^1.0.5"
+  }
+}
