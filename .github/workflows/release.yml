@@ -33,6 +33,12 @@ jobs:
       - name: Pack
         run: dotnet pack src/AzureDevOpsExcelSync/AzureDevOpsExcelSync.csproj -c Release -p:Version=${{ steps.version.outputs.VERSION }} --output ./nupkg
 
+      - name: Generate SBOM (CycloneDX)
+        run: |
+          dotnet tool install --global CycloneDX
+          dotnet CycloneDX src/AzureDevOpsExcelSync/AzureDevOpsExcelSync.csproj -o ./sbom -j
+          mv ./sbom/bom.json ./sbom/sbom-${{ steps.version.outputs.VERSION }}.cdx.json
+
       - name: Nuget Login (OIDC + temp API Key)
         uses: Nuget/login@v1
         id: login
@@ -47,4 +53,6 @@ jobs:
         with:
           tag_name: ${{ steps.version.outputs.TAG }}
           generate_release_notes: true
-          files: nupkg/*.nupkg
+          files: |
+            nupkg/*.nupkg
+            sbom/*.cdx.json

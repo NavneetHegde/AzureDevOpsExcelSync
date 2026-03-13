@@ -15,22 +15,22 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ── Layout constants ───────────────────────────────────────────
-const W       = 720;
-const H       = 640;   // tall enough for banner + pull output + push output
-const LINE_H  = 20;
-const PAD_X   = 18;
-const PAD_Y   = 18;
-const FONT    = '13px "Courier New", monospace';
+const W       = 760;
+const H       = 680;   // tall enough for banner + pull output + push output
+const LINE_H  = 22;
+const PAD_X   = 20;
+const PAD_Y   = 20;
+const FONT    = 'bold 15px "Courier New", monospace';
 
 // ── Palette ────────────────────────────────────────────────────
 const BG        = '#0d1117';
-const FG        = '#c9d1d9';
-const CYAN      = '#56b6c2';
-const DARK_GRAY = '#484f58';
-const YELLOW    = '#e3b341';
-const GREEN     = '#3fb950';
+const FG        = '#ffffff';
+const CYAN      = '#00e5ff';
+const DARK_GRAY = '#6e7681';
+const YELLOW    = '#ffd700';
+const GREEN     = '#00ff88';
 const WHITE     = '#ffffff';
-const PICK_BG   = '#1f6e79';
+const PICK_BG   = '#005f73';
 
 // ── Measure monospace char width once ─────────────────────────
 const _mc = createCanvas(20, 20);
@@ -41,7 +41,8 @@ const CW = _mx.measureText('M').width;
 // ── Helpers ────────────────────────────────────────────────────
 function makeCanvas() {
   const c = createCanvas(W, H);
-  const ctx = c.getContext('2d');
+  const ctx = c.getContext('2d', { antialias: 'none' });
+  ctx.antialias = 'none';
   ctx.fillStyle = BG;
   ctx.fillRect(0, 0, W, H);
   ctx.font = FONT;
@@ -112,7 +113,7 @@ fs.mkdirSync(path.dirname(OUTPUT), { recursive: true });
 
 const encoder = new GIFEncoder(W, H, 'neuquant', true);
 encoder.setRepeat(0);
-encoder.setQuality(10);
+encoder.setQuality(1);
 encoder.start();
 
 function frame(fn, delay = 80) {
